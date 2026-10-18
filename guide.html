@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>دليل لوحة الجرد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@500;600;700&display=swap">
+<style>
+/* Layout: a single reading column of numbered stages; each stage is a section with its own step list. Same tokens as the dashboard. */
+:root{
+  --bg:#F1F3F2; --surface:#FFFFFF; --surface-2:#F7F8F7; --ink:#18201F; --muted:#5E6B69; --line:#DCE2E0;
+  --accent:#0E6A6F; --accent-ink:#FFFFFF; --accent-soft:#E2F0F0;
+  --warn:#9A6200; --warn-bg:#FFF3D6; --err:#B3261E; --err-bg:#FDE8E6; --ok:#1E7A45; --ok-bg:#E3F4EA;
+  --kraft:#E9DFCB; --kraft-ink:#5A4A2C;
+  --f-display:"Readex Pro","IBM Plex Sans Arabic",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Arabic",system-ui,"Segoe UI",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1515; --surface:#172020; --surface-2:#1C2727; --ink:#E5ECEA; --muted:#97A6A3; --line:#2A3736;
+  --accent:#4DB6BA; --accent-ink:#06201F; --accent-soft:#163334;
+  --warn:#F2B84B; --warn-bg:#3A2C0D; --err:#FF8A80; --err-bg:#3D1A17; --ok:#6BD39A; --ok-bg:#12321F;
+  --kraft:#3A3324; --kraft-ink:#E6D6B4; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1515; --surface:#172020; --surface-2:#1C2727; --ink:#E5ECEA; --muted:#97A6A3; --line:#2A3736;
+  --accent:#4DB6BA; --accent-ink:#06201F; --accent-soft:#163334;
+  --warn:#F2B84B; --warn-bg:#3A2C0D; --err:#FF8A80; --err-bg:#3D1A17; --ok:#6BD39A; --ok-bg:#12321F;
+  --kraft:#3A3324; --kraft-ink:#E6D6B4; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75}
+.wrap{max-width:760px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-direction:column;gap:10px}
+.back{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--accent);font-weight:600;font-size:14px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px}
+.back:hover{border-color:var(--accent)}
+h1{font-family:var(--f-display);font-size:clamp(26px,5vw,36px);margin:0;line-height:1.25;text-wrap:balance}
+.lead{margin:0;color:var(--muted);max-width:60ch}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.toc a{font-size:13px;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.toc a:hover{border-color:var(--accent);color:var(--accent)}
+section{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 20px 22px;scroll-margin-top:16px}
+section h2{font-family:var(--f-display);font-size:20px;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+section h2 .n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:15px;font-variant-numeric:tabular-nums}
+ol,ul{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:8px}
+ol.steps{list-style:none;padding:0;counter-reset:s}
+ol.steps>li{counter-increment:s;display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}
+ol.steps>li::before{content:counter(s);font-variant-numeric:tabular-nums;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:8px;height:28px;display:grid;place-items:center;font-size:14px;margin-top:2px}
+ol.steps>li>div{min-width:0}
+ul.sub{margin-top:6px;gap:4px;color:var(--ink)}
+b{font-weight:700}
+.ui{display:inline-block;font-weight:600;font-size:14px;background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:0 7px;line-height:1.7;white-space:nowrap}
+.pill{display:inline-block;font-size:13px;font-weight:600;padding:0 8px;border-radius:999px;line-height:1.8;white-space:nowrap}
+.ok{background:var(--ok-bg);color:var(--ok)} .err{background:var(--err-bg);color:var(--err)} .warn{background:var(--warn-bg);color:var(--warn)} .kraft{background:var(--kraft);color:var(--kraft-ink)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:middle;margin-inline-end:4px}
+.dot.g{background:var(--ok)} .dot.r{background:var(--err)}
+.link{direction:ltr;unicode-bidi:isolate;display:inline-block;font-family:ui-monospace,Menlo,monospace;font-size:14px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:2px 8px;word-break:break-all;color:var(--accent);text-decoration:none}
+.note{background:var(--warn-bg);color:var(--warn);border-radius:12px;padding:14px 16px}
+.note ul{color:inherit}
+footer{color:var(--muted);font-size:13px;text-align:center}
+a:focus-visible,.toc a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← العودة إلى لوحة الجرد</a>
+    <h1>دليل استخدام لوحة جرد بضاعة غزة</h1>
+    <p class="lead">شرح خطوة بخطوة لكل ما في اللوحة، من فتح الرابط حتى تصدير نتيجة الجرد.</p>
+    <nav class="toc" aria-label="أقسام الدليل">
+      <a href="#s1">الدخول</a><a href="#s2">قبل البدء</a><a href="#s3">الملخص</a><a href="#s4">التنبيهات</a><a href="#s5">التبويبات والبحث</a><a href="#s6">طريقة العرض</a><a href="#s7">بطاقة الصنف</a><a href="#s8">طريقة الجرد</a><a href="#s9">الأزرار</a><a href="#s10">ملاحظات</a>
+    </nav>
+  </header>
+
+  <section id="s1">
+    <h2><span class="n">1</span>الدخول</h2>
+    <ol class="steps">
+      <li><div>افتح الرابط: <a class="link" href="./">ahmdwork23-source.github.io/jard-gaza</a></div></li>
+      <li><div>ستظهر شاشة <span class="ui">رمز الدخول</span>. اكتب الرمز الذي وصلك منّا، ثم اضغط <span class="ui">دخول</span>.</div></li>
+      <li><div>الجهاز يتذكر الرمز، ولن يُطلب منك مرة أخرى على نفس الجهاز إلا إذا ضغطت <span class="ui">خروج</span>.</div></li>
+    </ol>
+  </section>
+
+  <section id="s2">
+    <h2><span class="n">2</span>قبل البدء بالجرد</h2>
+    <ol class="steps">
+      <li><div>في أعلى الصفحة خانة <span class="ui">اسمك</span>. اكتب اسمك فيها مرة واحدة، فهو يُسجَّل بجانب كل عدد تُدخله حتى نعرف من قام بالجرد.</div></li>
+      <li><div>بجانب العنوان نقطة صغيرة تبيّن حالة الاتصال:
+        <ul class="sub">
+          <li><span class="dot g"></span><b>خضراء + «متزامن»</b>: الاتصال سليم، والأعداد تُحفظ.</li>
+          <li><span class="dot r"></span><b>حمراء</b>: لا يوجد اتصال. تأكد من الإنترنت وحدّث الصفحة.</li>
+        </ul></div></li>
+    </ol>
+  </section>
+
+  <section id="s3">
+    <h2><span class="n">3</span>الملخص (المربعات في الأعلى)</h2>
+    <ol class="steps">
+      <li><div><b>قيمة البضاعة</b>: إجمالي قيمة البضاعة بالشيكل (الكمية الواردة × سعر الحبة).</div></li>
+      <li><div><b>عدد الأصناف</b>: 96 صنفاً، موزعة على الورقتين.</div></li>
+      <li><div><b>إجمالي الكميات</b>: مجموع الكميات الواردة.</div></li>
+      <li><div><b>تقدّم الجرد</b>: عدد الأصناف التي تم جردها من أصل 96، مع شريط تقدّم، وعدد الأصناف التي فيها فرق أو عجز.</div></li>
+    </ol>
+  </section>
+
+  <section id="s4">
+    <h2><span class="n">4</span>التنبيهات</h2>
+    <ol class="steps">
+      <li><div>اضغط على شريط <span class="ui">تنبيهات</span> لعرض الملاحظات، مثل:
+        <ul class="sub">
+          <li>أرقام كشف مكررة بين الورقتين بأسعار أو كميات مختلفة.</li>
+          <li>أخطاء في مجاميع ملف الإكسل الأصلي.</li>
+          <li>أصناف ينقصها رقم أو بيان.</li>
+          <li>الأصناف التي يختلف فيها العدد بعد الجرد عن الوارد.</li>
+        </ul></div></li>
+      <li><div>بجانب كل تنبيه زر <span class="ui">اعرض</span> ينقلك مباشرة إلى الصنف.</div></li>
+    </ol>
+  </section>
+
+  <section id="s5">
+    <h2><span class="n">5</span>التبويبات والبحث</h2>
+    <ol class="steps">
+      <li><div><b>التبويبات</b>: <span class="ui">الكل</span> / <span class="ui">صور غزة 1</span> / <span class="ui">صور غزة 2</span>. اختر التبويب لعرض أصنافه فقط، ويتغير الملخص حسب التبويب.</div></li>
+      <li><div><b>البحث</b>: ابحث بالاسم أو رقم الكشف أو الارتكل أو المقاس.</div></li>
+      <li><div><b>الترتيب</b>: حسب ترتيب الإكسل، أو السعر (من الأقل أو من الأعلى)، أو الكمية، أو الاسم، أو أكبر فرق جرد.</div></li>
+      <li><div><b>الفلاتر</b>:
+        <ul class="sub">
+          <li><span class="ui">لم يُجرد</span>: الأصناف التي لم يُسجَّل لها عدد بعد.</li>
+          <li><span class="ui">فيه فرق</span>: الأصناف التي فيها عجز أو زيادة.</li>
+          <li><span class="ui">عليه تنبيه</span>: الأصناف التي عليها ملاحظات.</li>
+          <li><span class="ui">فاتورة جديدة 11</span>: أصناف الفاتورة 11 فقط.</li>
+        </ul></div></li>
+    </ol>
+  </section>
+
+  <section id="s6">
+    <h2><span class="n">6</span>طريقة العرض</h2>
+    <ol class="steps">
+      <li><div><span class="ui">شبكة</span>: بطاقة لكل صنف، فيها صورة كبيرة.</div></li>
+      <li><div><span class="ui">جدول</span>: قائمة مختصرة، أسرع للجرد على الكمبيوتر.</div></li>
+    </ol>
+  </section>
+
+  <section id="s7">
+    <h2><span class="n">7</span>محتوى بطاقة الصنف</h2>
+    <ol class="steps">
+      <li><div><b>الصورة</b>: اضغط عليها لتكبيرها. إذا كان للصنف أكثر من صورة، تنقّل بينها بزري <span class="ui">السابقة</span> و<span class="ui">التالية</span>.</div></li>
+      <li><div><b>الاسم</b> و<b>سعر الحبة بالشيكل</b>.</div></li>
+      <li><div><b>بيانات الصنف</b>: رقم الكشف، والارتكل، والمقاس، وشارة <span class="pill kraft">فاتورة جديدة 11</span> إن وجدت.</div></li>
+      <li><div><b>الوارد</b>: الكمية المسجّلة في الفاتورة.</div></li>
+      <li><div><b>العدد بعد الجرد</b>: الخانة التي تكتب فيها العدد الفعلي.</div></li>
+      <li><div><b>النتيجة</b>: تظهر تلقائياً تحت الخانة:
+        <ul class="sub">
+          <li><span class="pill ok">مطابق ✓</span> إذا تساوى العدد مع الوارد.</li>
+          <li><span class="pill err">عجز</span> أو <span class="pill err">زيادة</span> مع الفرق.</li>
+          <li>اسم من سجّل العدد، ووقت التسجيل.</li>
+        </ul></div></li>
+      <li><div><b>الملاحظات</b> باللون <span class="pill err">الأحمر</span> أو <span class="pill warn">الأصفر</span> أسفل البطاقة، إن وجدت.</div></li>
+    </ol>
+  </section>
+
+  <section id="s8">
+    <h2><span class="n">8</span>طريقة الجرد</h2>
+    <ol class="steps">
+      <li><div>عدّ القطع فعلياً، ثم اكتب الرقم في خانة <span class="ui">العدد بعد الجرد</span>.</div></li>
+      <li><div>لا يوجد زر حفظ، فالحفظ تلقائي بعد ثانية تقريباً.</div></li>
+      <li><div>لحذف عدد، امسح الخانة واتركها فارغة.</div></li>
+      <li><div>يمكن لأكثر من شخص الجرد في نفس الوقت من أجهزة مختلفة، وتظهر أعداد الجميع عند الكل خلال ثوانٍ.</div></li>
+    </ol>
+  </section>
+
+  <section id="s9">
+    <h2><span class="n">9</span>الأزرار في أعلى الصفحة</h2>
+    <ol class="steps">
+      <li><div><span class="ui">تصدير Excel</span>: ينزّل ملف Excel فيه كل الأصناف مع الوارد والعدد بعد الجرد والفرق، ومن سجّل كل عدد ومتى.</div></li>
+      <li><div><span class="ui">تنزيل كل الصور (ZIP)</span>: ملف مضغوط فيه كل الصور بجودتها الأصلية، مرتبة في مجلد لكل ورقة.</div></li>
+      <li><div><span class="ui">الوضع الداكن / الفاتح</span>: لتغيير ألوان الصفحة.</div></li>
+      <li><div><span class="ui">دليل الاستخدام</span>: يفتح هذه الصفحة.</div></li>
+      <li><div><span class="ui">خروج</span>: يقفل الصفحة على هذا الجهاز، ويطلب الرمز من جديد.</div></li>
+    </ol>
+  </section>
+
+  <section id="s10" class="note">
+    <h2 style="color:inherit"><span class="n" style="background:var(--warn);color:var(--surface)">!</span>ملاحظات</h2>
+    <ul>
+      <li>الصفحة تعمل على الموبايل والكمبيوتر.</li>
+      <li>الأسعار المعروضة هي <b>سعر الحبة الواحدة</b> بالشيكل.</li>
+      <li>إذا حدثت مشكلة في الحفظ، تظهر رسالة أسفل الشاشة. تأكد من الإنترنت وأعد إدخال العدد.</li>
+    </ul>
+  </section>
+
+  <footer><a class="back" href="./" style="align-self:center">← العودة إلى لوحة الجرد</a></footer>
+</div>
+<script>
+try{ const t=localStorage.getItem('jard-theme'); if(t) document.documentElement.dataset.theme=t; }catch(e){}
+</script>
+</body>
+</html>
