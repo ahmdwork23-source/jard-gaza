@@ -504,8 +504,8 @@ $('xlsxBtn').onclick=()=>{
   });
   const ws=XLSX.utils.aoa_to_sheet(rows);
   ws['!cols']=[{wch:14},{wch:5},{wch:22},{wch:12},{wch:12},{wch:10},{wch:14},{wch:10},{wch:16},{wch:10},{wch:18},{wch:16}];
-  ws['!views']=[{RTL:true}];
   const wb=XLSX.utils.book_new();
+  wb.Workbook={Views:[{RTL:true}]};
   XLSX.utils.book_append_sheet(wb,ws,'الجرد');
   XLSX.writeFile(wb,'جرد غزة - '+new Date().toISOString().slice(0,10)+'.xlsx');
   toast('بدأ تنزيل ملف Excel');
