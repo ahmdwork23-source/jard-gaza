@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>جرد بضاعة غزة</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@500;600;700&display=swap">
+<style>
+/* Layout: a stock-taking tool — summary strip, alerts, then a box-label grid or a dense ledger. Kraft-box neutrals, teal ink, amber for attention. */
+:root{
+  --bg:#F1F3F2; --surface:#FFFFFF; --surface-2:#F7F8F7; --ink:#18201F; --muted:#5E6B69; --line:#DCE2E0;
+  --accent:#0E6A6F; --accent-ink:#FFFFFF; --accent-soft:#E2F0F0;
+  --warn:#9A6200; --warn-bg:#FFF3D6; --err:#B3261E; --err-bg:#FDE8E6; --ok:#1E7A45; --ok-bg:#E3F4EA;
+  --kraft:#E9DFCB; --kraft-ink:#5A4A2C;
+  --shadow:0 1px 2px rgba(20,30,30,.06),0 4px 14px rgba(20,30,30,.05);
+  --f-display:"Readex Pro","IBM Plex Sans Arabic",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Arabic",system-ui,"Segoe UI",Tahoma,sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1515; --surface:#172020; --surface-2:#1C2727; --ink:#E5ECEA; --muted:#97A6A3; --line:#2A3736;
+  --accent:#4DB6BA; --accent-ink:#06201F; --accent-soft:#163334;
+  --warn:#F2B84B; --warn-bg:#3A2C0D; --err:#FF8A80; --err-bg:#3D1A17; --ok:#6BD39A; --ok-bg:#12321F;
+  --kraft:#3A3324; --kraft-ink:#E6D6B4; --shadow:0 1px 2px rgba(0,0,0,.4); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1515; --surface:#172020; --surface-2:#1C2727; --ink:#E5ECEA; --muted:#97A6A3; --line:#2A3736;
+  --accent:#4DB6BA; --accent-ink:#06201F; --accent-soft:#163334;
+  --warn:#F2B84B; --warn-bg:#3A2C0D; --err:#FF8A80; --err-bg:#3D1A17; --ok:#6BD39A; --ok-bg:#12321F;
+  --kraft:#3A3324; --kraft-ink:#E6D6B4; --shadow:0 1px 2px rgba(0,0,0,.4); color-scheme:dark}
+*{box-sizing:border-box}
+img{max-width:100%}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;direction:rtl}
+.wrap{max-width:1240px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+.num{font-variant-numeric:tabular-nums}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+header.top h1{font-family:var(--f-display);font-size:clamp(22px,4vw,30px);margin:0;letter-spacing:-.01em;text-wrap:balance}
+header.top p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.hdr-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:500;font-size:14px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn[disabled]{opacity:.55;cursor:default}
+.btn svg{width:16px;height:16px}
+.sync{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.dot.on{background:var(--ok)} .dot.off{background:var(--err)}
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;min-width:0}
+.stat .k{font-size:12.5px;color:var(--muted)}
+.stat .v{font-family:var(--f-display);font-size:clamp(20px,3.4vw,28px);font-weight:600;margin-top:2px;white-space:nowrap}
+.stat .s{font-size:12px;color:var(--muted)}
+.stat.hero{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.stat.hero .k,.stat.hero .s{color:inherit;opacity:.85}
+.bar{height:6px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--accent)}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.alerts{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.alerts summary{cursor:pointer;padding:12px 16px;display:flex;align-items:center;gap:10px;font-weight:600;list-style:none}
+.alerts summary::-webkit-details-marker{display:none}
+.alerts summary .chev{margin-inline-start:auto;transition:transform .2s;color:var(--muted)}
+.alerts[open] summary .chev{transform:rotate(180deg)}
+.alerts ul{list-style:none;margin:0;padding:0 16px 14px;display:flex;flex-direction:column;gap:6px}
+.alerts li{display:flex;gap:10px;align-items:flex-start;font-size:14px;padding:8px 10px;border-radius:8px;background:var(--surface-2)}
+.alerts li button{all:unset;cursor:pointer;color:var(--accent);font-weight:600;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.err{background:var(--err-bg);color:var(--err)} .pill.warn{background:var(--warn-bg);color:var(--warn)}
+.pill.ok{background:var(--ok-bg);color:var(--ok)} .pill.info{background:var(--accent-soft);color:var(--accent)}
+.pill.kraft{background:var(--kraft);color:var(--kraft-ink)}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.tab{all:unset;cursor:pointer;padding:10px 14px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;display:flex;gap:8px;align-items:center}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab .c{font-size:12px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:0 7px;color:var(--muted)}
+
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.search{flex:1 1 240px;min-width:0;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:0 14px}
+.search input{border:0;background:transparent;padding:9px 0;width:100%;min-width:0;outline:none}
+select.sel{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 12px;max-width:100%}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{all:unset;cursor:pointer;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.seg button{all:unset;cursor:pointer;padding:7px 12px;display:flex;align-items:center;gap:5px;font-size:13px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.seg svg{width:15px;height:15px}
+.count-line{font-size:13px;color:var(--muted)}
+
+/* grid of box-label cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;min-width:0;transition:box-shadow .2s,border-color .2s}
+.card.flash{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.card.has-err{border-color:color-mix(in srgb,var(--err) 45%,var(--line))}
+.ph{position:relative;aspect-ratio:4/3;background:var(--surface-2);cursor:zoom-in;border:0;padding:0;display:block;width:100%}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .more{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:2px 8px;border-radius:999px}
+.ph .idx{position:absolute;top:8px;right:8px;background:var(--surface);color:var(--ink);font-size:12px;font-weight:600;padding:2px 8px;border-radius:6px}
+.noimg{display:grid;place-items:center;color:var(--muted);font-size:13px;cursor:default}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px;flex:1}
+.ttl{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.ttl h3{margin:0;font-family:var(--f-display);font-size:17px;font-weight:600;line-height:1.3}
+.price{font-family:var(--f-display);font-weight:700;font-size:18px;white-space:nowrap;color:var(--accent)}
+.price small{font-size:11px;font-weight:500;color:var(--muted);display:block;text-align:left}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;border:1px dashed var(--line);border-radius:6px;padding:1px 7px;color:var(--muted);white-space:nowrap}
+.tag b{color:var(--ink);font-weight:600}
+.kashf{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;direction:ltr;unicode-bidi:isolate;display:inline-block}
+.count-box{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--surface-2);border-radius:10px;padding:10px}
+.count-box label{font-size:12px;color:var(--muted);display:block}
+.count-box .q{font-family:var(--f-display);font-weight:600;font-size:20px}
+.inv{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 10px;font-size:17px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums}
+.inv:disabled{opacity:.6}
+.diffrow{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12px;color:var(--muted);min-height:20px;flex-wrap:wrap}
+.notes{display:flex;flex-direction:column;gap:5px;margin:0;padding:0;list-style:none}
+.notes li{font-size:12.5px;line-height:1.45;padding:6px 8px;border-radius:7px;display:flex;gap:6px}
+.notes li.err{background:var(--err-bg);color:var(--err)} .notes li.warn{background:var(--warn-bg);color:var(--warn)}
+.notes li button{all:unset;cursor:pointer;text-decoration:underline;font-weight:600}
+
+/* ledger (table view) */
+.ledger{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.lrow{display:grid;grid-template-columns:64px minmax(0,2.2fr) minmax(0,.8fr) minmax(0,.9fr) minmax(0,.7fr) 104px minmax(0,.8fr);gap:12px;align-items:center;padding:10px 14px;border-top:1px solid var(--line)}
+.lrow.head{border-top:0;background:var(--surface-2);font-size:12px;color:var(--muted);font-weight:600;padding-block:9px}
+.lrow .th{width:64px;height:48px;border-radius:8px;overflow:hidden;border:0;padding:0;cursor:zoom-in;background:var(--surface-2)}
+.lrow .th img{width:100%;height:100%;object-fit:cover}
+.lrow .nm{font-weight:600;font-size:14.5px}
+.lrow .sub{font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.lrow .inv{font-size:15px;padding:5px 6px}
+.lrow .flags{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px}
+.lrow.flash{background:var(--accent-soft)}
+.c-sz,.c-df{font-size:13.5px}
+@media (max-width:760px){
+  .lrow{grid-template-columns:52px minmax(0,1fr) auto 76px;gap:10px;padding:10px 12px}
+  .lrow .th{width:52px;height:44px}
+  .lrow .c-sz,.lrow .c-qty,.lrow .c-df{display:none}
+  .lrow .m-only{display:flex}
+}
+.m-only{display:none}
+.who-row{display:flex;gap:10px;flex-wrap:wrap}.fld{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted);flex:1 1 200px;min-width:0;max-width:320px}.fld input{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;font-size:15px;color:var(--ink)}
+.empty{padding:40px 16px;text-align:center;color:var(--muted)}
+.banner{border-radius:var(--r);padding:10px 14px;font-size:13.5px;background:var(--warn-bg);color:var(--warn)}
+
+/* lightbox */
+.lb{position:fixed;inset:0;background:rgba(5,10,10,.88);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.lb img{max-width:100%;max-height:78vh;border-radius:10px;object-fit:contain;background:#111}
+.lb .cap{color:#fff;text-align:center;font-size:15px}
+.lb .cap b{font-family:var(--f-display)}
+.lb .x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));left:max(12px,env(safe-area-inset-left,0px));all:unset;cursor:pointer;color:#fff;font-size:28px;line-height:1;padding:8px 12px;position:absolute}
+.lb .nav{display:flex;gap:10px}
+.lb .nav button{all:unset;cursor:pointer;color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:6px 16px}
+.toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;z-index:60;max-width:calc(100% - 32px);text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>جرد بضاعة غزة</h1>
+      <p>صور الأصناف وأسعار الحبة بالشيكل، مع خانة «العدد بعد الجرد» المحفوظة في جدول مشترك.</p>
+    </div>
+    <div class="hdr-actions">
+      <span class="sync" id="sync"><span class="dot" id="syncDot"></span><span id="syncTxt">جارٍ الاتصال…</span></span>
+      <button class="btn" id="themeBtn" type="button" aria-label="تبديل الوضع الفاتح والداكن">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span id="themeTxt">الوضع</span></button>
+      <button class="btn primary" id="zipBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v3h16v-3"/></svg><span id="zipTxt">تنزيل كل الصور (ZIP)</span></button>
+    </div>
+  </header>
+
+  <div class="who-row">
+    <label class="fld"><span>اسمك (يظهر بجانب كل عدد تسجّله)</span><input id="who" type="text" maxlength="40" placeholder="مثال: محمد" autocomplete="name"></label>
+    <label class="fld" id="pinWrap" hidden><span>رمز التعديل</span><input id="pin" type="password" inputmode="numeric" maxlength="20" placeholder="••••"></label>
+  </div>
+  <div id="banner" class="banner" hidden></div>
+
+  <section class="stats" id="stats" aria-label="ملخص"></section>
+
+  <details class="alerts" id="alerts">
+    <summary><span id="alertsTitle">تنبيهات</span><span style="font-weight:400;font-size:13px;color:var(--muted)">اضغط لعرض التفاصيل</span><span class="chev">▾</span></summary>
+    <ul id="alertsList"></ul>
+  </details>
+
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+
+  <div class="toolbar">
+    <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="ابحث بالاسم، رقم الكشف، الارتكل، المقاس…" aria-label="بحث"></label>
+    <select id="sort" class="sel" aria-label="الفرز">
+      <option value="n">ترتيب الإكسل</option>
+      <option value="pa">السعر: الأقل أولاً</option>
+      <option value="pd">السعر: الأعلى أولاً</option>
+      <option value="qd">الكمية: الأكثر أولاً</option>
+      <option value="name">الاسم (أ–ي)</option>
+      <option value="diff">أكبر فرق جرد</option>
+    </select>
+    <div class="seg" role="group" aria-label="طريقة العرض">
+      <button type="button" id="vGrid" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>شبكة</button>
+      <button type="button" id="vTable" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>جدول</button>
+    </div>
+  </div>
+  <div class="toolbar">
+    <div class="chips" id="chips"></div>
+    <span class="count-line num" id="countLine" style="margin-inline-start:auto"></span>
+  </div>
+
+  <main id="list"></main>
+</div>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="عرض الصورة">
+  <button class="x" id="lbX" type="button" aria-label="إغلاق">×</button>
+  <img id="lbImg" alt="">
+  <div class="cap" id="lbCap"></div>
+  <div class="nav" id="lbNav"><button type="button" id="lbPrev">السابقة</button><button type="button" id="lbNext">التالية</button></div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+const API = 'https://script.google.com/macros/s/AKfycby8Li86VB5-sjxyUOZKJIA2682wo8tIwsEZp92nDDnBSQ5KUHODyvod3fgh9rAPdfO_/exec';
+const DATA = {"sheets":[{"id":"s1","name":"صور غزة 1"},{"id":"s2","name":"صور غزة 2"}],"products":[{"key":"s1-r2","sheet":"s1","n":1,"name":"لاكوست","art":"اصلي","kashf":null,"qty":220,"sizes":"41/45","price":117.37,"xxx":"1","serial":53,"inv11":false,"imgs":["s1-r2-1"],"notes":[]},{"key":"s1-r8","sheet":"s1","n":2,"name":"اديستار","art":"اصلي","kashf":null,"qty":5,"sizes":"41/45","price":145.31,"xxx":"4","serial":54,"inv11":false,"imgs":["s1-r8-1"],"notes":[]},{"key":"s1-r14","sheet":"s1","n":3,"name":"ات زيرو","art":"اصلي","kashf":null,"qty":24,"sizes":"41/45","price":117.37,"xxx":"4","serial":55,"inv11":false,"imgs":["s1-r14-1"],"notes":[]},{"key":"s1-r20","sheet":"s1","n":4,"name":"رجالي ستارز","art":"ستارز","kashf":null,"qty":11,"sizes":"41/45","price":89.42,"xxx":"13","serial":56,"inv11":false,"imgs":["s1-r20-1"],"notes":[]},{"key":"s1-r26","sheet":"s1","n":5,"name":"سكتشر حريمي","art":"اصلي","kashf":null,"qty":16,"sizes":"37/41","price":111.78,"xxx":"23","serial":57,"inv11":false,"imgs":["s1-r26-1"],"notes":[]},{"key":"s1-r32","sheet":"s1","n":6,"name":"روبك","art":"مستورد","kashf":null,"qty":8,"sizes":"41/45","price":100.6,"xxx":"6","serial":58,"inv11":false,"imgs":["s1-r32-1"],"notes":[]},{"key":"s1-r38","sheet":"s1","n":7,"name":"سبورت","art":"ولادي","kashf":null,"qty":8,"sizes":"31/35","price":33.53,"xxx":"125","serial":59,"inv11":false,"imgs":["s1-r38-1"],"notes":[]},{"key":"s1-r44","sheet":"s1","n":8,"name":"ايفا نايك","art":"زنوبه","kashf":null,"qty":15,"sizes":"41/45","price":18.67,"xxx":"16","serial":60,"inv11":false,"imgs":["s1-r44-1"],"notes":[]},{"key":"s1-r50","sheet":"s1","n":9,"name":"نايك رجالي","art":"اصلي","kashf":"H-3","qty":25,"sizes":"41/45","price":122.96,"xxx":"2","serial":1,"inv11":false,"imgs":["s1-r50-1"],"notes":[]},{"key":"s1-r56","sheet":"s1","n":10,"name":"نايك رجالي","art":"اصلي","kashf":"H-1","qty":15,"sizes":"41/45","price":122.96,"xxx":"2","serial":2,"inv11":false,"imgs":["s1-r56-1"],"notes":[]},{"key":"s1-r66","sheet":"s1","n":11,"name":"هوكة رجالي","art":"اصلي","kashf":"H-8","qty":20,"sizes":"41/45","price":139.72,"xxx":"12","serial":33,"inv11":false,"imgs":["s1-r66-1"],"notes":[]},{"key":"s1-r72","sheet":"s1","n":12,"name":"اديدس رجالي","art":"اصلي","kashf":"H-7","qty":15,"sizes":"41/45","price":122.96,"xxx":"4","serial":9,"inv11":false,"imgs":["s1-r72-1"],"notes":[]},{"key":"s1-r77","sheet":"s1","n":13,"name":"ازكس رجالي","art":"اصلي","kashf":"H-4","qty":15,"sizes":"41/45","price":139.72,"xxx":"20","serial":32,"inv11":false,"imgs":["s1-r77-1"],"notes":[]},{"key":"s1-r83","sheet":"s1","n":14,"name":"التره رجالي","art":"اصلي","kashf":"H-2","qty":20,"sizes":"40/45","price":139.72,"xxx":"19","serial":31,"inv11":false,"imgs":["s1-r83-1"],"notes":[]},{"key":"s1-r89","sheet":"s1","n":15,"name":"سكتشر رجالي","art":"اصلي","kashf":"H-5","qty":20,"sizes":"40/45","price":122.96,"xxx":"3","serial":19,"inv11":false,"imgs":["s1-r89-1"],"notes":[]},{"key":"s1-r95","sheet":"s1","n":16,"name":"سكتشر رجالي","art":"اصلي","kashf":"H-11","qty":15,"sizes":"41/45","price":95.01,"xxx":"3","serial":20,"inv11":false,"imgs":["s1-r95-1"],"notes":[]},{"key":"s1-r101","sheet":"s1","n":17,"name":"سكتشر رباط","art":"اصلي","kashf":"H-20","qty":9,"sizes":"41/45","price":95.01,"xxx":"3","serial":21,"inv11":false,"imgs":["s1-r101-1"],"notes":[]},{"key":"s1-r107","sheet":"s1","n":18,"name":"سكتشر","art":"43","kashf":"H-14","qty":9,"sizes":"41/45","price":91.1,"xxx":"3","serial":23,"inv11":false,"imgs":["s1-r107-1","s1-r107-2"],"notes":[{"t":"err","m":"رقم الكشف H-14 مكرر في الورقة الأخرى (صنف «سكتشر») بقيم مختلفة: السعر 97.37 ₪، الكمية 15","ref":"s2-r162"}]},{"key":"s1-r113","sheet":"s1","n":19,"name":"سلبر رجالي سكتشر","art":"سلبر","kashf":"H22","qty":24,"sizes":"41/45","price":8.38,"xxx":"16","serial":46,"inv11":false,"imgs":["s1-r113-1"],"notes":[]},{"key":"s1-r123","sheet":"s1","n":20,"name":"نايك رجالي","art":"650","kashf":"H-18","qty":15,"sizes":"41/45","price":72.66,"xxx":"2","serial":4,"inv11":false,"imgs":["s1-r123-1"],"notes":[]},{"key":"s1-r133","sheet":"s1","n":21,"name":"اديدس رجالي","art":"2547","kashf":"H-16","qty":24,"sizes":"41/45","price":72.66,"xxx":"4","serial":11,"inv11":false,"imgs":["s1-r133-1"],"notes":[]},{"key":"s1-r143","sheet":"s1","n":22,"name":"نايك رجالي","art":"714","kashf":"H-49","qty":15,"sizes":"41/45","price":78.24,"xxx":"2","serial":40,"inv11":false,"imgs":["s1-r143-1"],"notes":[]},{"key":"s1-r153","sheet":"s1","n":23,"name":"نايك رجالي","art":"2017/25","kashf":"H-30","qty":10,"sizes":"41/45","price":39.12,"xxx":"2","serial":7,"inv11":false,"imgs":["s1-r153-1"],"notes":[]},{"key":"s1-r163","sheet":"s1","n":24,"name":"اي كلاود","art":"709","kashf":"H-39","qty":15,"sizes":"41/45","price":81.6,"xxx":"19","serial":34,"inv11":false,"imgs":["s1-r163-1"],"notes":[]},{"key":"s1-r173","sheet":"s1","n":25,"name":"سكتشر رجالي","art":"فتنامي","kashf":"H-24","qty":12,"sizes":"41/45","price":95.01,"xxx":"3","serial":24,"inv11":false,"imgs":["s1-r173-1"],"notes":[]},{"key":"s1-r183","sheet":"s1","n":26,"name":"اديدس رجالي","art":"فتنامي","kashf":"H-42","qty":15,"sizes":"41/45","price":83.83,"xxx":"4","serial":12,"inv11":false,"imgs":["s1-r183-1"],"notes":[]},{"key":"s1-r193","sheet":"s1","n":27,"name":"رجالي","art":"H-504","kashf":"H-29","qty":15,"sizes":"41/45","price":46.95,"xxx":"19","serial":39,"inv11":false,"imgs":["s1-r193-1"],"notes":[]},{"key":"s1-r203","sheet":"s1","n":28,"name":"اديدس رجالي","art":"1286","kashf":"H-32","qty":15,"sizes":"41/45","price":78.24,"xxx":"4","serial":13,"inv11":false,"imgs":["s1-r203-1"],"notes":[]},{"key":"s1-r213","sheet":"s1","n":29,"name":"نايك رجالي","art":"400/21","kashf":"H-44","qty":15,"sizes":"41/45","price":95.01,"xxx":"2","serial":5,"inv11":false,"imgs":["s1-r213-1"],"notes":[]},{"key":"s1-r223","sheet":"s1","n":30,"name":"اديدس رجالي","art":"718","kashf":"H-51","qty":5,"sizes":"41/45","price":78.24,"xxx":"4","serial":14,"inv11":false,"imgs":["s1-r223-1"],"notes":[{"t":"err","m":"رقم الكشف H-51 مكرر في الورقة الأخرى (صنف «اديدس») بقيم مختلفة: السعر 83.63 ₪، الكمية 9","ref":"s2-r182"}]},{"key":"s1-r233","sheet":"s1","n":31,"name":"روبك","art":"14","kashf":"H-45","qty":15,"sizes":"41/45","price":84.95,"xxx":"6","serial":35,"inv11":false,"imgs":["s1-r233-1"],"notes":[]},{"key":"s1-r243","sheet":"s1","n":32,"name":"روبك","art":"16","kashf":"H-40","qty":15,"sizes":"41/45","price":83.83,"xxx":"6","serial":36,"inv11":false,"imgs":["s1-r243-1"],"notes":[]},{"key":"s1-r253","sheet":"s1","n":33,"name":"اديدس رجالي","art":"26","kashf":"H-37","qty":15,"sizes":"41/45","price":84.95,"xxx":"4","serial":15,"inv11":false,"imgs":["s1-r253-1"],"notes":[]},{"key":"s1-r263","sheet":"s1","n":34,"name":"اديدس رجالي","art":"703","kashf":"5","qty":15,"sizes":"41/45","price":81.6,"xxx":"4","serial":16,"inv11":false,"imgs":["s1-r263-1"],"notes":[]},{"key":"s1-r273","sheet":"s1","n":35,"name":"اديدس رجالي","art":"35","kashf":"H-36","qty":15,"sizes":"46/50","price":83.83,"xxx":"4","serial":17,"inv11":false,"imgs":["s1-r273-1"],"notes":[]},{"key":"s1-r283","sheet":"s1","n":36,"name":"نايك رجالي","art":"901","kashf":"H-25","qty":15,"sizes":"41/45","price":84.95,"xxx":"3","serial":6,"inv11":false,"imgs":["s1-r283-1"],"notes":[]},{"key":"s1-r293","sheet":"s1","n":37,"name":"نيو بلانص","art":"اصلي","kashf":"H-47","qty":20,"sizes":"41/45","price":139.72,"xxx":"5","serial":37,"inv11":false,"imgs":["s1-r293-1"],"notes":[]},{"key":"s1-r303","sheet":"s1","n":38,"name":"روبك","art":"313/21","kashf":"H-34","qty":10,"sizes":"41/45","price":39.12,"xxx":"6","serial":38,"inv11":false,"imgs":["s1-r303-1"],"notes":[]},{"key":"s1-r313","sheet":"s1","n":39,"name":"سكتشر رجالي","art":"23","kashf":"H-26","qty":15,"sizes":"41/45","price":91.66,"xxx":"3","serial":25,"inv11":false,"imgs":["s1-r313-1"],"notes":[]},{"key":"s1-r323","sheet":"s1","n":40,"name":"سكتشر رجالي","art":"اصلي","kashf":"H-50","qty":30,"sizes":"41/45","price":122.96,"xxx":"3","serial":22,"inv11":false,"imgs":["s1-r323-1"],"notes":[]},{"key":"s1-r333","sheet":"s1","n":41,"name":"مشكل اصلي","art":"اصلي","kashf":"H-97","qty":32,"sizes":"40/41","price":100.6,"xxx":null,"serial":3,"inv11":false,"imgs":["s1-r333-1"],"notes":[{"t":"warn","m":"لا توجد قيمة في عمود XXX"}]},{"key":"s1-r343","sheet":"s1","n":42,"name":"ايفا اديدس","art":"ايفا","kashf":"H-88","qty":24,"sizes":"40/45","price":20.12,"xxx":"16","serial":47,"inv11":false,"imgs":["s1-r343-1"],"notes":[]},{"key":"s1-r353","sheet":"s1","n":43,"name":"اديدس رجالي","art":"511","kashf":"H-58","qty":12,"sizes":"41//45","price":100.6,"xxx":"4","serial":18,"inv11":false,"imgs":["s1-r353-1"],"notes":[]},{"key":"s1-r363","sheet":"s1","n":44,"name":"سكتشر رجالي","art":"2724","kashf":"H-57","qty":24,"sizes":"41/45","price":90.54,"xxx":"3","serial":26,"inv11":false,"imgs":["s1-r363-1"],"notes":[]},{"key":"s1-r373","sheet":"s1","n":45,"name":"محير","art":"0-2-1","kashf":"H-69","qty":15,"sizes":"31/36","price":39.12,"xxx":"125","serial":41,"inv11":false,"imgs":["s1-r373-1"],"notes":[]},{"key":"s1-r383","sheet":"s1","n":46,"name":"اودلادي","art":"0-2-1","kashf":"H-62","qty":15,"sizes":"27/31","price":39.12,"xxx":"125","serial":42,"inv11":false,"imgs":["s1-r383-1"],"notes":[]},{"key":"s1-r393","sheet":"s1","n":47,"name":"رجالي","art":"شبشب","kashf":"H-83","qty":5,"sizes":"41/45","price":33.53,"xxx":"14","serial":49,"inv11":false,"imgs":["s1-r393-1"],"notes":[]},{"key":"s1-r403","sheet":"s1","n":48,"name":"رجالي","art":"شبشب","kashf":"H-85","qty":5,"sizes":"41/45","price":33.53,"xxx":"14","serial":50,"inv11":false,"imgs":["s1-r403-1"],"notes":[]},{"key":"s1-r413","sheet":"s1","n":49,"name":"رجالي","art":"شبشب","kashf":"H-82","qty":5,"sizes":"41/45","price":33.53,"xxx":"14","serial":51,"inv11":false,"imgs":["s1-r413-1"],"notes":[]},{"key":"s1-r423","sheet":"s1","n":50,"name":"رجالي","art":"شبشب","kashf":"H-84","qty":5,"sizes":"41/45","price":33.53,"xxx":"14","serial":52,"inv11":false,"imgs":["s1-r423-1"],"notes":[]},{"key":"s1-r433","sheet":"s1","n":51,"name":"اطفال","art":"831","kashf":"H-108","qty":15,"sizes":"27/31","price":42.48,"xxx":"125","serial":43,"inv11":false,"imgs":["s1-r433-1"],"notes":[]},{"key":"s1-r443","sheet":"s1","n":52,"name":"بيبي","art":"2313","kashf":"H-112","qty":12,"sizes":"19/22","price":26.83,"xxx":"125","serial":44,"inv11":false,"imgs":["s1-r443-1"],"notes":[]},{"key":"s1-r453","sheet":"s1","n":53,"name":"بيبي","art":"2313","kashf":"H-113","qty":12,"sizes":"19/22","price":26.83,"xxx":"125","serial":45,"inv11":false,"imgs":["s1-r453-1"],"notes":[]},{"key":"s1-r463","sheet":"s1","n":54,"name":"ايفا نايك","art":"ايفا","kashf":"H-116","qty":23,"sizes":"41/45","price":20.12,"xxx":"16","serial":48,"inv11":false,"imgs":["s1-r463-1"],"notes":[]},{"key":"s1-r473","sheet":"s1","n":55,"name":"سكتشر رجالي","art":"326","kashf":"H-105","qty":24,"sizes":"41/45","price":76.01,"xxx":"3","serial":30,"inv11":false,"imgs":["s1-r473-1"],"notes":[]},{"key":"s1-r483","sheet":"s1","n":56,"name":"نايك رجالي","art":"2545","kashf":"H-98","qty":15,"sizes":"41/45","price":58.12,"xxx":"2","serial":8,"inv11":false,"imgs":["s1-r483-1"],"notes":[]},{"key":"s1-r493","sheet":"s1","n":57,"name":"سكتشر رجالي","art":"25/7","kashf":"H-95","qty":24,"sizes":"41/45","price":71.54,"xxx":"3","serial":29,"inv11":false,"imgs":["s1-r493-1"],"notes":[]},{"key":"s1-r503","sheet":"s1","n":58,"name":"سكتشر رجالي","art":"9","kashf":"H-91","qty":15,"sizes":"41/45","price":87.19,"xxx":"3","serial":28,"inv11":false,"imgs":["s1-r503-1"],"notes":[]},{"key":"s1-r513","sheet":"s1","n":59,"name":"سكتشر رجالي","art":"5222","kashf":"H-104","qty":24,"sizes":"41/45","price":71.54,"xxx":"3","serial":27,"inv11":false,"imgs":["s1-r513-1"],"notes":[]},{"key":"s1-r523","sheet":"s1","n":60,"name":"اديدس رجالي","art":"اصلي","kashf":"H-92","qty":15,"sizes":"41/45","price":122.96,"xxx":"4","serial":10,"inv11":false,"imgs":["s1-r523-1"],"notes":[]},{"key":"s2-r2","sheet":"s2","n":1,"name":"كولمبية","art":"اصلي","kashf":"H-63","qty":15,"sizes":"41/45","price":161.29,"xxx":"19","serial":7,"inv11":false,"imgs":["s2-r2-1"],"notes":[]},{"key":"s2-r12","sheet":"s2","n":2,"name":"نايك","art":"اصلي","kashf":"H-60","qty":15,"sizes":"41/45","price":149.35,"xxx":"2","serial":1,"inv11":false,"imgs":["s2-r12-1"],"notes":[]},{"key":"s2-r22","sheet":"s2","n":3,"name":"هوكة","art":"اصلي","kashf":"H-68","qty":15,"sizes":"41/45","price":161.295,"xxx":"12","serial":8,"inv11":false,"imgs":["s2-r22-1"],"notes":[]},{"key":"s2-r32","sheet":"s2","n":4,"name":"سكتشر رجالي","art":"اصلي","kashf":"H-6","qty":15,"sizes":"41/45","price":137.4,"xxx":"3","serial":17,"inv11":false,"imgs":["s2-r32-1"],"notes":[]},{"key":"s2-r42","sheet":"s2","n":5,"name":"تي ان رجالي","art":"k-2","kashf":"H-89","qty":10,"sizes":"41/45","price":50.78,"xxx":"2","serial":3,"inv11":false,"imgs":["s2-r42-1"],"notes":[]},{"key":"s2-r52","sheet":"s2","n":6,"name":"نيو بلنص","art":"46","kashf":"H-72","qty":10,"sizes":"46/50","price":59.74,"xxx":"5","serial":11,"inv11":false,"imgs":["s2-r52-1"],"notes":[]},{"key":"s2-r62","sheet":"s2","n":7,"name":"تي ان","art":"47","kashf":"H-75","qty":10,"sizes":"41/45","price":56.15,"xxx":"2","serial":2,"inv11":false,"imgs":["s2-r62-1"],"notes":[]},{"key":"s2-r72","sheet":"s2","n":8,"name":"سكتشر شبابي","art":"اصلي","kashf":"H-13","qty":16,"sizes":"36/41","price":101.56,"xxx":"23","serial":13,"inv11":false,"imgs":["s2-r72-1"],"notes":[]},{"key":"s2-r82","sheet":"s2","n":9,"name":"حريمي","art":"91","kashf":"H-77","qty":15,"sizes":"37/41","price":57.35,"xxx":"23","serial":18,"inv11":false,"imgs":["s2-r82-1"],"notes":[]},{"key":"s2-r92","sheet":"s2","n":10,"name":"حريمي","art":"82","kashf":"H-78","qty":15,"sizes":"37/41","price":57.35,"xxx":"23","serial":19,"inv11":false,"imgs":["s2-r92-1"],"notes":[]},{"key":"s2-r102","sheet":"s2","n":11,"name":"اطفال","art":"831","kashf":"H-87","qty":10,"sizes":"22/27","price":45.4,"xxx":"125","serial":20,"inv11":false,"imgs":["s2-r102-1"],"notes":[]},{"key":"s2-r112","sheet":"s2","n":12,"name":"كولمبية","art":"اصلي","kashf":"H-100","qty":10,"sizes":"41/45","price":119.48,"xxx":"19","serial":9,"inv11":false,"imgs":["s2-r112-1"],"notes":[]},{"key":"s2-r122","sheet":"s2","n":13,"name":"ايكلاود","art":"اصلي","kashf":"H-102","qty":10,"sizes":"41/45","price":143.37,"xxx":"19","serial":10,"inv11":false,"imgs":["s2-r122-1"],"notes":[]},{"key":"s2-r132","sheet":"s2","n":14,"name":"سكتشر شبابي","art":"اصلي","kashf":"H-94","qty":16,"sizes":"37/41","price":89.61,"xxx":"23","serial":15,"inv11":false,"imgs":["s2-r132-1"],"notes":[]},{"key":"s2-r142","sheet":"s2","n":15,"name":"سكتشر شبابي","art":"اصلي","kashf":"H-19","qty":15,"sizes":"37/41","price":101.56,"xxx":"23","serial":14,"inv11":false,"imgs":["s2-r142-1"],"notes":[]},{"key":"s2-r152","sheet":"s2","n":16,"name":"اديدس رجالي","art":"رجالي","kashf":"H-12","qty":24,"sizes":"41/45","price":107.53,"xxx":"4","serial":4,"inv11":false,"imgs":["s2-r152-1"],"notes":[]},{"key":"s2-r162","sheet":"s2","n":17,"name":"سكتشر","art":"43","kashf":"H-14","qty":15,"sizes":"41/45","price":97.37,"xxx":"3","serial":6,"inv11":false,"imgs":["s2-r162-1"],"notes":[{"t":"err","m":"رقم الكشف H-14 مكرر في الورقة الأخرى (صنف «سكتشر») بقيم مختلفة: السعر 91.1 ₪، الكمية 9","ref":"s1-r107"}]},{"key":"s2-r172","sheet":"s2","n":18,"name":"سكتشر","art":"311","kashf":"H-106","qty":24,"sizes":"37/41","price":81.24,"xxx":"23","serial":16,"inv11":false,"imgs":["s2-r172-1"],"notes":[]},{"key":"s2-r182","sheet":"s2","n":19,"name":"اديدس","art":"718","kashf":"H-51","qty":9,"sizes":"41/45","price":83.63,"xxx":"4","serial":5,"inv11":false,"imgs":["s2-r182-1"],"notes":[{"t":"err","m":"رقم الكشف H-51 مكرر في الورقة الأخرى (صنف «اديدس رجالي») بقيم مختلفة: السعر 78.24 ₪، الكمية 5","ref":"s1-r223"}]},{"key":"s2-r192","sheet":"s2","n":20,"name":"جزمة طبي","art":"طبي","kashf":"H-121","qty":20,"sizes":"41/45","price":77.66,"xxx":"18","serial":22,"inv11":false,"imgs":["s2-r192-1"],"notes":[]},{"key":"s2-r202","sheet":"s2","n":21,"name":"رجالي شبشب","art":"شبشب","kashf":"H-130","qty":10,"sizes":"41/45","price":41.22,"xxx":"14","serial":23,"inv11":false,"imgs":["s2-r202-1"],"notes":[]},{"key":"s2-r212","sheet":"s2","n":22,"name":"كلفن كلاين","art":null,"kashf":"H-15","qty":10,"sizes":"41/45","price":41.22,"xxx":"19","serial":12,"inv11":false,"imgs":["s2-r212-1"],"notes":[{"t":"warn","m":"رقم الارتكل تحوّل في الإكسل إلى تاريخ (11/10/2026) — الرقم الأصلي غير معروف"}]},{"key":"s2-r222","sheet":"s2","n":23,"name":"رجالي ستارز","art":"ستارز","kashf":"H-131","qty":13,"sizes":"41/45","price":95.58,"xxx":"13","serial":24,"inv11":false,"imgs":["s2-r222-1"],"notes":[]},{"key":"s2-r232","sheet":"s2","n":24,"name":"روبك","art":"مستورد","kashf":"H-122","qty":16,"sizes":"41/45","price":107.53,"xxx":"6","serial":25,"inv11":false,"imgs":["s2-r232-1"],"notes":[]},{"key":"s2-r242","sheet":"s2","n":25,"name":"سبورت","art":"ولادي","kashf":"H-132","qty":7,"sizes":"31/35","price":35.84,"xxx":"125","serial":26,"inv11":false,"imgs":["s2-r242-1"],"notes":[]},{"key":"s2-r252","sheet":"s2","n":26,"name":"سبورت","art":"رجالي","kashf":"H-126","qty":15,"sizes":"41/45","price":50.18,"xxx":"19","serial":27,"inv11":false,"imgs":["s2-r252-1"],"notes":[]},{"key":"s2-r262","sheet":"s2","n":27,"name":"ايفا نايك","art":"زنوبه","kashf":"H-133","qty":8,"sizes":"41/45","price":19.95,"xxx":"16","serial":28,"inv11":false,"imgs":["s2-r262-1"],"notes":[]},{"key":"s2-r272","sheet":"s2","n":28,"name":"رجالي","art":"سكتشر","kashf":"H-134","qty":4,"sizes":"41/45","price":75.27,"xxx":"3","serial":29,"inv11":false,"imgs":["s2-r272-1"],"notes":[]},{"key":"s2-r282","sheet":"s2","n":29,"name":"اطفال","art":"0.2.1","kashf":"H-79","qty":15,"sizes":"22/27","price":41.82,"xxx":"125","serial":21,"inv11":false,"imgs":["s2-r282-1"],"notes":[]},{"key":"s2-r292","sheet":"s2","n":30,"name":"اير فورس","art":"رجالي","kashf":"1","qty":30,"sizes":"41/45","price":41.82,"xxx":"2","serial":30,"inv11":true,"imgs":["s2-r292-1"],"notes":[]},{"key":"s2-r302","sheet":"s2","n":31,"name":"SP","art":"رجالي","kashf":"2","qty":10,"sizes":"41/45","price":38.22,"xxx":"2","serial":31,"inv11":true,"imgs":["s2-r302-1"],"notes":[]},{"key":"s2-r312","sheet":"s2","n":32,"name":"لاكوست","art":"رجالي","kashf":"3","qty":10,"sizes":"41/45","price":41.82,"xxx":"1","serial":32,"inv11":true,"imgs":["s2-r312-1"],"notes":[]},{"key":"s2-r322","sheet":"s2","n":33,"name":"رجالي","art":"AF-10","kashf":"4","qty":10,"sizes":"41/45","price":51.97,"xxx":"19","serial":33,"inv11":true,"imgs":["s2-r322-1"],"notes":[]},{"key":"s2-r332","sheet":"s2","n":34,"name":"ضبان سليكون","art":"سلبر","kashf":"5","qty":10,"sizes":"-","price":11.95,"xxx":"ضبان","serial":34,"inv11":true,"imgs":["s2-r332-1"],"notes":[{"t":"warn","m":"قيمة XXX نصية (\"ضبان\") وليست رقماً"}]},{"key":"s2-r342","sheet":"s2","n":35,"name":"ضبان سفنج","art":"سلبر","kashf":"6","qty":24,"sizes":"-","price":4.78,"xxx":null,"serial":35,"inv11":true,"imgs":["s2-r342-1"],"notes":[{"t":"warn","m":"لا توجد قيمة في عمود XXX"},{"t":"err","m":"الكمية 24 في الصنف، لكن ملخص أسفل الورقة يذكر «ضبان سفنج» = 20"}]},{"key":"s2-r352","sheet":"s2","n":36,"name":"ضبان عادي","art":"كرتونه","kashf":"7","qty":1,"sizes":"-","price":41.82,"xxx":null,"serial":36,"inv11":true,"imgs":["s2-r352-1"],"notes":[{"t":"warn","m":"لا توجد قيمة في عمود XXX"}]}],"alerts":[{"sheet":"s1","t":"ok","m":"مجموع «ع وارد» المكتوب في الإكسل (1136) يطابق مجموع الأصناف (1136)."},{"sheet":"s2","t":"err","m":"مجموع «ع وارد» في الإكسل = 447، لكن معادلته تجمع حتى الصف 331 فقط. مجموع كل الأصناف = 482 (الفرق 35: ضبان سليكون 10 + ضبان سفنج 24 + ضبان عادي 1)."},{"sheet":"s2","t":"err","m":"خلية «عدد جواز 1» مربوطة بملف إكسل خارجي ونتيجتها 0، مع أن مجموع الورقة الأولى 1136. لذلك «العدد الإجمالي = 447» لا يشمل الورقة الأولى."},{"sheet":"s2","t":"warn","m":"حسب الإكسل: عدد الاستلام 446 من 447، والمفقود 1."}]};
+const SHEETS = DATA.sheets, P = DATA.products;
+const byKey = Object.fromEntries(P.map(p=>[p.key,p]));
+const sheetName = id => (SHEETS.find(s=>s.id===id)||{}).name||id;
+const counts = {};      // key -> {count, at, by}
+const pending = {};     // key -> timer
+let db=null, user=null, canWrite=true, myId=null, profiles={};
+const st = {tab:'all', q:'', sort:'n', view:'grid', filter:'all'};
+try{ const s=JSON.parse(localStorage.getItem('jard-ui')||'{}'); if(s.view) st.view=s.view; if(s.tab) st.tab=s.tab; }catch(e){}
+const saveUI=()=>{try{localStorage.setItem('jard-ui',JSON.stringify({view:st.view,tab:st.tab}))}catch(e){}};
+
+const fmtN = n => n==null?'—':Number(n).toLocaleString('en-US',{maximumFractionDigits:2});
+const fmtS = n => n==null?'—':Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' ₪';
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $ = id => document.getElementById(id);
+const thumb = f => `img/t/${f}.webp`, full = f => `img/f/${f}.jpg`;
+
+function cnt(p){ const c=counts[p.key]; return c && typeof c.count==='number' ? c.count : null; }
+function diff(p){ const c=cnt(p); return c==null||p.qty==null?null:c-p.qty; }
+function liveNotes(p){
+  const n=[...p.notes]; const d=diff(p);
+  if(d!=null && d!==0) n.unshift({t:'err',m:`العدد بعد الجرد (${cnt(p)}) لا يطابق الوارد (${p.qty}) — ${d<0?'عجز':'زيادة'} ${Math.abs(d)}`});
+  return n;
+}
+
+/* ---------- summary ---------- */
+function scope(){ return st.tab==='all'?P:P.filter(p=>p.sheet===st.tab); }
+function renderStats(){
+  const S=scope();
+  const qty=S.reduce((a,p)=>a+(p.qty||0),0);
+  const val=S.reduce((a,p)=>a+(p.qty||0)*(p.price||0),0);
+  const done=S.filter(p=>cnt(p)!=null).length;
+  const mism=S.filter(p=>{const d=diff(p);return d!=null&&d!==0}).length;
+  const short=S.reduce((a,p)=>{const d=diff(p);return a+(d!=null&&d<0?-d:0)},0);
+  const label= st.tab==='all'?'كل الأوراق':sheetName(st.tab);
+  $('stats').innerHTML=`
+   <div class="stat hero"><div class="k">قيمة البضاعة — ${esc(label)}</div><div class="v num">${fmtS(val)}</div><div class="s">الكمية الواردة × سعر الحبة</div></div>
+   <div class="stat"><div class="k">عدد الأصناف</div><div class="v num">${S.length}</div><div class="s">${st.tab==='all'?SHEETS.map(s=>`${esc(s.name)}: ${P.filter(p=>p.sheet===s.id).length}`).join(' · '):'في هذا التبويب'}</div></div>
+   <div class="stat"><div class="k">إجمالي الكميات (ع وارد)</div><div class="v num">${fmtN(qty)}</div><div class="s">حبة / جوز</div></div>
+   <div class="stat"><div class="k">تقدّم الجرد</div><div class="v num">${done} / ${S.length}</div><div class="s">${mism?`<span class="pill err">${mism} فرق · عجز ${short}</span>`:'لا فروقات حتى الآن'}</div><div class="bar"><i style="width:${S.length?done/S.length*100:0}%"></i></div></div>`;
+}
+
+/* ---------- alerts ---------- */
+function renderAlerts(){
+  const items=[];
+  DATA.alerts.filter(a=>st.tab==='all'||a.sheet===st.tab).forEach(a=>items.push({t:a.t,m:`<b>${esc(sheetName(a.sheet))}:</b> ${esc(a.m)}`}));
+  scope().forEach(p=>liveNotes(p).forEach(n=>items.push({t:n.t,m:`<b>${esc(p.name)}</b> <span class="kashf">${esc(p.kashf||'')}</span> — ${esc(n.m)}`,key:p.key})));
+  const nErr=items.filter(i=>i.t==='err').length, nW=items.filter(i=>i.t==='warn').length;
+  $('alertsTitle').innerHTML=`تنبيهات <span class="pill err">${nErr} خطأ</span> <span class="pill warn">${nW} ملاحظة</span>`;
+  const lbl={err:'خطأ',warn:'ملاحظة',ok:'مطابق'};
+  $('alertsList').innerHTML=items.map(i=>`<li><span class="pill ${i.t}">${lbl[i.t]}</span><span style="flex:1;min-width:0">${i.m}</span>${i.key?`<button type="button" data-goto="${i.key}">اعرض</button>`:''}</li>`).join('')||'<li>لا توجد تنبيهات.</li>';
+}
+
+/* ---------- tabs / chips ---------- */
+function renderTabs(){
+  const t=[{id:'all',name:'الكل',n:P.length},...SHEETS.map(s=>({id:s.id,name:s.name,n:P.filter(p=>p.sheet===s.id).length}))];
+  $('tabs').innerHTML=t.map(x=>`<button class="tab" role="tab" type="button" data-tab="${x.id}" aria-selected="${st.tab===x.id}">${esc(x.name)}<span class="c num">${x.n}</span></button>`).join('');
+}
+function renderChips(){
+  const c=[['all','الكل'],['todo','لم يُجرد'],['mism','فيه فرق'],['notes','عليه تنبيه'],['inv11','فاتورة جديدة 11']];
+  const show=c.filter(([k])=>k!=='inv11'||scope().some(p=>p.inv11));
+  if(!show.find(([k])=>k===st.filter)) st.filter='all';
+  $('chips').innerHTML=show.map(([k,l])=>`<button class="chip" type="button" data-f="${k}" aria-pressed="${st.filter===k}">${l}</button>`).join('');
+}
+
+/* ---------- list ---------- */
+function filtered(){
+  const q=st.q.trim().toLowerCase();
+  let L=scope().filter(p=>{
+    if(st.filter==='todo'&&cnt(p)!=null) return false;
+    if(st.filter==='mism'){const d=diff(p); if(d==null||d===0) return false;}
+    if(st.filter==='notes'&&!liveNotes(p).length) return false;
+    if(st.filter==='inv11'&&!p.inv11) return false;
+    if(!q) return true;
+    return [p.name,p.art,p.kashf,p.sizes,p.xxx,p.serial,p.price].some(v=>v!=null&&String(v).toLowerCase().includes(q));
+  });
+  const ord={n:(a,b)=>(a.sheet>b.sheet?1:a.sheet<b.sheet?-1:a.n-b.n),pa:(a,b)=>(a.price??1e9)-(b.price??1e9),pd:(a,b)=>(b.price??-1)-(a.price??-1),
+    qd:(a,b)=>(b.qty??-1)-(a.qty??-1),name:(a,b)=>String(a.name).localeCompare(String(b.name),'ar'),diff:(a,b)=>Math.abs(diff(b)??-1)-Math.abs(diff(a)??-1)};
+  return L.sort(ord[st.sort]);
+}
+function inputHTML(p,cls=''){
+  const c=cnt(p);
+  return `<input class="inv ${cls}" id="inv-${p.key}" data-key="${p.key}" type="number" inputmode="numeric" min="0" step="1" value="${c??''}" placeholder="—" aria-label="العدد بعد الجرد — ${esc(p.name)}" ${(!db||!canWrite)?'disabled':''}>`;
+}
+function diffHTML(p){
+  const d=diff(p), c=counts[p.key];
+  let s = d==null?'<span>لم يُجرد بعد</span>': d===0?'<span class="pill ok">مطابق ✓</span>': `<span class="pill err">${d<0?'عجز':'زيادة'} ${Math.abs(d)}</span>`;
+  let who='';
+  if(c&&c.at){ const nm=c.by||''; who=`<span>${nm?esc(nm)+' · ':''}${new Date(c.at).toLocaleString('ar-EG-u-nu-latn',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span>`; }
+  return s+who;
+}
+function card(p){
+  const notes=liveNotes(p), img=p.imgs[0];
+  return `<article class="card ${notes.some(n=>n.t==='err')?'has-err':''}" id="c-${p.key}">
+    ${img?`<button class="ph" type="button" data-lb="${p.key}" aria-label="تكبير صورة ${esc(p.name)}"><img src="${thumb(img)}" alt="${esc(p.name)}" loading="lazy"><span class="idx num">#${p.n}</span>${p.imgs.length>1?`<span class="more">${p.imgs.length} صور</span>`:''}</button>`:`<div class="ph noimg">لا توجد صورة</div>`}
+    <div class="body">
+      <div class="ttl"><h3>${esc(p.name)}</h3><div class="price num">${fmtS(p.price)}<small>سعر الحبة</small></div></div>
+      <div class="meta">
+        ${p.kashf?`<span class="tag">كشف <b class="kashf">${esc(p.kashf)}</b></span>`:''}
+        ${p.art?`<span class="tag">ارتكل <b>${esc(p.art)}</b></span>`:''}
+        ${p.sizes&&p.sizes!=='-'?`<span class="tag">مقاس <b class="num">${esc(p.sizes)}</b></span>`:''}
+        ${p.xxx?`<span class="tag">XXX <b>${esc(p.xxx)}</b></span>`:''}
+        ${p.inv11?'<span class="pill kraft">فاتورة جديدة 11</span>':''}
+      </div>
+      <div class="count-box">
+        <div><label>الوارد</label><div class="q num">${fmtN(p.qty)}</div></div>
+        <div><label for="inv-${p.key}">العدد بعد الجرد</label>${inputHTML(p)}</div>
+        <div class="diffrow" id="d-${p.key}">${diffHTML(p)}</div>
+      </div>
+      ${notes.length?`<ul class="notes">${notes.map(n=>`<li class="${n.t}"><span>${n.t==='err'?'⚠':'•'}</span><span>${esc(n.m)}${n.ref?` <button type="button" data-goto="${n.ref}">انتقل للصنف الآخر</button>`:''}</span></li>`).join('')}</ul>`:''}
+    </div></article>`;
+}
+function row(p){
+  const notes=liveNotes(p), img=p.imgs[0], d=diff(p);
+  const flags=notes.length?`<div class="flags">${notes.map(n=>`<span class="pill ${n.t}" title="${esc(n.m)}">${n.t==='err'?'خطأ':'ملاحظة'}</span>`).slice(0,3).join('')}${p.inv11?'<span class="pill kraft">فاتورة 11</span>':''}</div>`:(p.inv11?'<div class="flags"><span class="pill kraft">فاتورة 11</span></div>':'');
+  return `<div class="lrow" id="c-${p.key}">
+    ${img?`<button class="th" type="button" data-lb="${p.key}" aria-label="تكبير صورة ${esc(p.name)}"><img src="${thumb(img)}" alt="" loading="lazy"></button>`:'<div class="th"></div>'}
+    <div style="min-width:0"><div class="nm">${esc(p.name)} <span class="sub" style="display:inline">#${p.n}</span></div>
+      <div class="sub">${p.kashf?`<span class="kashf">${esc(p.kashf)}</span>`:''}${p.art?`<span>ارتكل ${esc(p.art)}</span>`:''}<span class="m-only num">وارد ${fmtN(p.qty)}</span></div>${flags}</div>
+    <div class="c-sz num">${p.sizes&&p.sizes!=='-'?esc(p.sizes):'—'}</div>
+    <div class="num" style="font-weight:600">${fmtS(p.price)}</div>
+    <div class="c-qty num">${fmtN(p.qty)}</div>
+    <div>${inputHTML(p)}</div>
+    <div class="c-df" id="d-${p.key}">${d==null?'—':d===0?'<span class="pill ok">مطابق</span>':`<span class="pill err">${d<0?'−':'+'}${Math.abs(d)}</span>`}</div>
+  </div>`;
+}
+function renderList(){
+  const L=filtered();
+  $('countLine').textContent=`${L.length} صنف معروض`;
+  if(!L.length){ $('list').innerHTML='<div class="empty">لا توجد أصناف تطابق البحث أو الفلتر.</div>'; return; }
+  if(st.view==='grid'){
+    let html='', last=null;
+    $('list').innerHTML=`<div class="grid">${L.map(card).join('')}</div>`;
+  } else {
+    $('list').innerHTML=`<div class="ledger"><div class="lrow head"><div></div><div>الصنف</div><div class="c-sz">المقاس</div><div>سعر الحبة</div><div class="c-qty">الوارد</div><div>بعد الجرد</div><div class="c-df">الفرق</div></div>${L.map(row).join('')}</div>`;
+  }
+}
+function renderAll(){ renderStats(); renderAlerts(); renderTabs(); renderChips(); renderList();
+  $('vGrid').setAttribute('aria-pressed',st.view==='grid'); $('vTable').setAttribute('aria-pressed',st.view==='table'); }
+
+/* refresh one product in place without stealing focus */
+function refreshProduct(key){
+  const p=byKey[key]; const el=$('c-'+key); if(!el) return;
+  const inp=$('inv-'+key);
+  if(inp && document.activeElement===inp){ const d=$('d-'+key); if(d) d.innerHTML = st.view==='grid'?diffHTML(p):(diff(p)==null?'—':diff(p)===0?'<span class="pill ok">مطابق</span>':`<span class="pill err">${diff(p)<0?'−':'+'}${Math.abs(diff(p))}</span>`); return; }
+  const tmp=document.createElement('div'); tmp.innerHTML=(st.view==='grid'?card(p):row(p)).trim();
+  el.replaceWith(tmp.firstElementChild);
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-tab],[data-f],[data-lb],[data-goto]'); if(!t) return;
+  if(t.dataset.tab){ st.tab=t.dataset.tab; saveUI(); renderAll(); }
+  else if(t.dataset.f){ st.filter=t.dataset.f; renderChips(); renderList(); }
+  else if(t.dataset.lb){ openLB(t.dataset.lb,0); }
+  else if(t.dataset.goto){ goTo(t.dataset.goto); }
+});
+function goTo(key){
+  const p=byKey[key]; if(!p) return;
+  if(st.tab!=='all'&&st.tab!==p.sheet) st.tab=p.sheet;
+  st.q=''; $('q').value=''; st.filter='all'; renderAll();
+  const el=$('c-'+key); if(!el) return;
+  el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});
+  el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),2200);
+}
+$('q').addEventListener('input',e=>{st.q=e.target.value; renderList();});
+$('sort').addEventListener('change',e=>{st.sort=e.target.value; renderList();});
+$('vGrid').onclick=()=>{st.view='grid';saveUI();renderAll();};
+$('vTable').onclick=()=>{st.view='table';saveUI();renderAll();};
+
+/* inventory input → Google Sheet (debounced, one write per product at a time) */
+const inflight={};
+function meta(p){ return {sheet:sheetName(p.sheet),name:p.name,kashf:p.kashf,qty:p.qty}; }
+async function commit(key){
+  clearTimeout(pending[key]); delete pending[key];
+  const inp=$('inv-'+key); if(!inp||!db) return;
+  const raw=inp.value.trim();
+  if(raw!==''&&!isFinite(Number(raw))) return;
+  const val= raw===''?null:Math.max(0,Math.round(Number(raw)));
+  const cur=cnt(byKey[key]); if(cur===val) return;
+  if(needPin && !getPin()){ toast('اكتب رمز التعديل أولاً'); $('pin').focus(); return; }
+  if(inflight[key]){ await inflight[key].catch(()=>{}); }
+  const prev=counts[key];
+  if(val==null) delete counts[key]; else counts[key]={count:val,at:Date.now(),by:getName()};
+  refreshSummary(key);
+  inflight[key]=fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({key,count:val,by:getName(),pin:getPin(),meta:meta(byKey[key])})})
+    .then(r=>r.json()).then(j=>{
+      if(j.ok){ setSync(true); return; }
+      if(prev) counts[key]=prev; else delete counts[key];
+      refreshSummary(key);
+      if(j.error==='bad_pin'){ toast('رمز التعديل غير صحيح — لم يُحفظ العدد'); $('pin').focus(); }
+      else toast('لم يُحفظ العدد ('+(j.error||'خطأ')+')');
+    }).catch(()=>{ setSync(false,'غير متصل'); toast('لم يُحفظ العدد — تحقق من الإنترنت وأعد المحاولة'); })
+    .finally(()=>{delete inflight[key];});
+}
+document.addEventListener('input',e=>{ if(e.target.classList.contains('inv')){ const k=e.target.dataset.key; clearTimeout(pending[k]); pending[k]=setTimeout(()=>commit(k),900);} });
+document.addEventListener('change',e=>{ if(e.target.classList.contains('inv')) commit(e.target.dataset.key); });
+function refreshSummary(key){ renderStats(); renderAlerts(); if(key) refreshProduct(key); }
+document.addEventListener('input',e=>{ if(e.target.classList.contains('inv')){ const k=e.target.dataset.key; clearTimeout(pending[k]); pending[k]=setTimeout(()=>commit(k),800);} });
+document.addEventListener('change',e=>{ if(e.target.classList.contains('inv')) commit(e.target.dataset.key); });
+function refreshSummary(key){ renderStats(); renderAlerts(); if(key) refreshProduct(key); }
+
+/* ---------- lightbox ---------- */
+let lbState=null;
+function openLB(key,i){ const p=byKey[key]; if(!p||!p.imgs.length) return; lbState={key,i}; showLB(); $('lb').hidden=false; $('lbX').focus(); }
+function showLB(){ const p=byKey[lbState.key], f=p.imgs[lbState.i];
+  $('lbImg').src=thumb(f); const big=new Image(); big.onload=()=>{ if(lbState&&byKey[lbState.key].imgs[lbState.i]===f) $('lbImg').src=big.src; }; big.src=full(f);
+  $('lbImg').alt=p.name; $('lbCap').innerHTML=`<b>${esc(p.name)}</b> · <span class="num">${fmtS(p.price)}</span> للحبة${p.kashf?` · <span class="kashf">${esc(p.kashf)}</span>`:''}${p.imgs.length>1?` · صورة ${lbState.i+1} من ${p.imgs.length}`:''}`;
+  $('lbNav').hidden=p.imgs.length<2; }
+function closeLB(){ $('lb').hidden=true; lbState=null; }
+$('lbX').onclick=closeLB; $('lb').addEventListener('click',e=>{ if(e.target.id==='lb') closeLB(); });
+$('lbNext').onclick=()=>{const n=byKey[lbState.key].imgs.length; lbState.i=(lbState.i+1)%n; showLB();};
+$('lbPrev').onclick=()=>{const n=byKey[lbState.key].imgs.length; lbState.i=(lbState.i-1+n)%n; showLB();};
+document.addEventListener('keydown',e=>{ if(!lbState) return; if(e.key==='Escape') closeLB(); });
+
+/* ---------- theme ---------- */
+function curTheme(){ const a=document.documentElement.dataset.theme; return a || (matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'); }
+function paintThemeBtn(){ $('themeTxt').textContent = curTheme()==='dark'?'الوضع الفاتح':'الوضع الداكن'; }
+try{ const t=localStorage.getItem('jard-theme'); if(t) document.documentElement.dataset.theme=t; }catch(e){}
+$('themeBtn').onclick=()=>{ const n=curTheme()==='dark'?'light':'dark'; document.documentElement.dataset.theme=n; try{localStorage.setItem('jard-theme',n)}catch(e){} paintThemeBtn(); };
+paintThemeBtn();
+
+/* ---------- misc ---------- */
+let tt; function toast(m){ const t=$('toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,3500); }
+function showBanner(m){ $('banner').textContent=m; $('banner').hidden=false; }
+function setSync(on,txt){ $('syncDot').className='dot '+(on?'on':'off'); $('syncTxt').textContent= txt || (on?'متزامن مع كل الأجهزة':'غير متصل'); }
+
+/* ---------- ZIP export ---------- */
+const safe=s=>String(s??'').replace(/[\\/:*?"<>|]+/g,'-').replace(/\s+/g,' ').trim();
+$('zipBtn').onclick=async()=>{
+  if(!window.JSZip){ toast('مكتبة الضغط لم تُحمَّل — أعد تحميل الصفحة'); return; }
+  const btn=$('zipBtn'); btn.disabled=true;
+  try{
+    const zip=new JSZip(); let done=0; const all=P.flatMap(p=>p.imgs.map((f,i)=>({p,f,i})));
+    for(const {p,f,i} of all){
+      const r=await fetch(full(f)); if(!r.ok) throw new Error('fetch');
+      const name=`${String(p.n).padStart(2,'0')} - ${safe(p.name)}${p.kashf?' - '+safe(p.kashf):''}${p.imgs.length>1?' ('+(i+1)+')':''}.jpg`;
+      zip.folder(safe(sheetName(p.sheet))).file(name, await r.blob());
+      $('zipTxt').textContent=`جارٍ التجهيز ${++done}/${all.length}`;
+    }
+    const blob=await zip.generateAsync({type:'blob',compression:'STORE'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='صور الأصناف - جرد غزة.zip';
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),60000);
+    toast('بدأ تنزيل ملف الصور');
+  }catch(err){ toast('تعذّر تجهيز ملف الصور — تحقق من الإنترنت'); }
+  finally{ btn.disabled=false; $('zipTxt').textContent='تنزيل كل الصور (ZIP)'; }
+};
+
+/* ---------- name & PIN (kept on this device) ---------- */
+let needPin=false;
+const getName=()=>$('who').value.trim(), getPin=()=>$('pin').value.trim();
+try{ $('who').value=localStorage.getItem('jard-who')||''; $('pin').value=localStorage.getItem('jard-pin')||''; }catch(e){}
+$('who').addEventListener('change',()=>{try{localStorage.setItem('jard-who',getName())}catch(e){}});
+$('pin').addEventListener('change',()=>{try{localStorage.setItem('jard-pin',getPin())}catch(e){}});
+
+renderAll();
+
+/* ---------- sync with Google Sheet (polling) ---------- */
+async function pull(){
+  if(!API) return;
+  try{
+    const r=await fetch(API+'?action=list&t='+Date.now()); const j=await r.json();
+    if(!j.ok) throw 0;
+    needPin=!!j.pin; $('pinWrap').hidden=!needPin;
+    const remote=j.counts||{}, changed=[];
+    for(const k of new Set([...Object.keys(remote),...Object.keys(counts)])){
+      if(!byKey[k]||pending[k]||inflight[k]) continue;
+      const a=counts[k], b=remote[k];
+      if(JSON.stringify(a&&[a.count,a.by])!==JSON.stringify(b&&[b.count,b.by])){ if(b) counts[k]=b; else delete counts[k]; changed.push(k); }
+    }
+    setSync(true,'متزامن · آخر تحديث '+new Date().toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'}));
+    if(changed.length){ renderStats(); renderAlerts(); renderChips(); if(changed.length>12) renderList(); else changed.forEach(refreshProduct); }
+  }catch(e){ setSync(false,'تعذّر الاتصال بجدول الجرد'); }
+}
+if(!API){ db=null; setSync(false,'جدول الجرد غير مربوط'); showBanner('لم يُربط جدول Google Sheets بعد — الأعداد لن تُحفظ حتى يتم الربط.'); renderList(); }
+else { db=true; renderList(); pull(); setInterval(()=>{ if(!document.hidden) pull(); },12000); document.addEventListener('visibilitychange',()=>{ if(!document.hidden) pull(); }); }
+</script>
+</body>
+</html>
